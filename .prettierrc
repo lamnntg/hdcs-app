@@ -1,4 +1,7 @@
 {
   "singleQuote": true,
-  "trailingComma": "all"
+  "doubleQuote": true,
+  "trailingComma": "all",
+  "indent_style": "space",
+  "tabWidth": 2
 }
