@@ -19,6 +19,7 @@ export type FileSchemaDocument = HydratedDocument<FileSchemaClass>;
     virtuals: true,
     getters: true,
   },
+  collection: 'files',
 })
 export class FileSchemaClass extends EntityDocumentHelper {
   @Prop()

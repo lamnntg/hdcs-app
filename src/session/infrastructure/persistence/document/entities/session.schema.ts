@@ -11,6 +11,7 @@ export type SessionSchemaDocument = HydratedDocument<SessionSchemaClass>;
     virtuals: true,
     getters: true,
   },
+  collection: 'sessions',
 })
 export class SessionSchemaClass extends EntityDocumentHelper {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserSchemaClass' })
