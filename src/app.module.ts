@@ -1,3 +1,4 @@
+import { EntitiesModule } from './entities/entities.module';
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
@@ -98,7 +99,9 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     MailModule,
     MailerModule,
     HomeModule,
-    ProductsModule
+    ProductsModule,
+    // entities extention
+    EntitiesModule,
   ],
 })
 export class AppModule {}
