@@ -22,7 +22,11 @@ export enum ProductStatus {
   collection: 'products',
 })
 export class ProductSchemaClass extends EntityDocumentHelper {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'CategorySchemaClass' })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CategorySchemaClass',
+    default: null,
+  })
   category: CategorySchemaClass;
 
   @Prop({
@@ -30,10 +34,18 @@ export class ProductSchemaClass extends EntityDocumentHelper {
   })
   name: string;
 
+  @Prop()
+  images: Array<string>;
+
   @Prop({
     type: String,
   })
   description: string;
+
+  @Prop({
+    type: String,
+  })
+  slug: string;
 
   @Prop({
     type: String,

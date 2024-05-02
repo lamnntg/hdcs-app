@@ -1,12 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../utils/document-entity-helper';
-import { ProductSchemaClass } from './product.schema';
+import { ProductSkuSchemaClass } from './product_sku.schema';
 
 // We use class-transformer in schema and domain entity.
 // We duplicate these rules because you can choose not to use adapters
 // in your project and return an schema entity directly in response.
-export type ProductSkuSchemaDocument = HydratedDocument<ProductSkuSchemaClass>;
+export type LicenseSchemaDocument = HydratedDocument<LicenseSchemaClass>;
+
+export enum LicenseStatus {
+  active = 'active',
+  inactive = 'inactive',
+}
 
 @Schema({
   timestamps: true,
@@ -14,35 +19,25 @@ export type ProductSkuSchemaDocument = HydratedDocument<ProductSkuSchemaClass>;
     virtuals: true,
     getters: true,
   },
-  collection: 'product_skus',
+  collection: 'licenses',
 })
-export class ProductSkuSchemaClass extends EntityDocumentHelper {
-  @Prop({
-    type: String,
-  })
-  code: string;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ProductSchemaClass' })
-  product: ProductSchemaClass;
+export class LicenseSchemaClass extends EntityDocumentHelper {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ProductSkuSchemaClass' })
+  productSku: ProductSkuSchemaClass;
 
   @Prop({
     type: String,
   })
-  name: string;
+  key: string;
 
-  @Prop()
-  images: Array<string>;
-
-  @Prop({
-    type: String,
-    default: null,
-  })
-  description: string;
+  @Prop({ default: now })
+  expiredAt: Date;
 
   @Prop({
     type: String,
+    default: LicenseStatus.active,
   })
-  categoryId: string;
+  status: LicenseStatus;
 
   @Prop({ default: now })
   createdAt: Date;
@@ -54,6 +49,4 @@ export class ProductSkuSchemaClass extends EntityDocumentHelper {
   deletedAt: Date;
 }
 
-export const ProductSkuSchema = SchemaFactory.createForClass(
-  ProductSkuSchemaClass,
-);
+export const LicenseSchema = SchemaFactory.createForClass(LicenseSchemaClass);
