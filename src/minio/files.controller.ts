@@ -8,15 +8,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { FilesS3Service } from './files.service';
+import { FilesMinioService } from './files.service';
 
-@ApiTags('Files')
+@ApiTags('Minio Files')
 @Controller({
-  path: 'files',
+  path: 'minio',
   version: '1',
 })
-export class FilesS3Controller {
-  constructor(private readonly filesService: FilesS3Service) {}
+export class FilesMinioController {
+  constructor(private readonly filesService: FilesMinioService) {}
 
   @ApiBearerAuth()
   //   @UseGuards(AuthGuard('jwt'))
@@ -34,8 +34,7 @@ export class FilesS3Controller {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.MulterS3.File) {
-
-    return this.filesService.create(file);
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return await this.filesService.create(file);
   }
 }

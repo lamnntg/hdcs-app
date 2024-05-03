@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { ProductRequestDto } from './dtos/product.request.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  ProductRequestDto,
+  CreateProductRequestDto,
+} from './dtos/product.request.dto';
 import { ProductReponseDto } from './dtos/product.response.dto';
 import {
   ProductSchemaDocument,
@@ -7,12 +10,14 @@ import {
 } from 'src/entities/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { FilesMinioService } from 'src/minio/files.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(ProductSchemaClass.name)
     private readonly productModel: Model<ProductSchemaDocument>,
+    private fileService: FilesMinioService,
   ) {}
 
   async getProducts(request: ProductRequestDto): Promise<ProductReponseDto[]> {
@@ -37,5 +42,20 @@ export class ProductsService {
 
       return product;
     });
+  }
+
+  async createProduct(
+    request: CreateProductRequestDto,
+    images: Express.Multer.File[],
+  ) {
+    const urls = await images.forEach(async (image) => {
+      return await this.fileService.create(image);
+    });
+
+    console.log("🚀 ~ file: products.service.ts:56 ~ ProductsService ~ urls ~ urls:", urls)
+
+    
+
+    return;
   }
 }

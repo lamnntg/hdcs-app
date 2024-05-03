@@ -1,13 +1,28 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 
 import { RolesGuard } from '../roles/roles.guard';
 import { ProductsService } from './products.service';
-import { ProductRequestDto } from './dtos/product.request.dto';
+import {
+  CreateProductRequestDto,
+  ProductRequestDto,
+} from './dtos/product.request.dto';
 import { ProductReponseDto } from './dtos/product.response.dto';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user)
@@ -26,5 +41,19 @@ export class ProductsController {
     @Query() request: ProductRequestDto,
   ): Promise<ProductReponseDto[]> {
     return await this.productService.getProducts(request);
+  }
+
+  @Post('/create')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images', 10)) // Maximum 10 images can be uploaded
+  @HttpCode(HttpStatus.OK)
+  async createProduct(
+    @Body() request: CreateProductRequestDto,
+    @UploadedFiles() images: Express.Multer.File[], // Use UploadedFiles to handle multiple files
+  ): Promise<void> {
+    console.log('Uploaded images:', images);
+
+    // Pass the product data and images to the service method to create the product
+    return await this.productService.createProduct(request, images);
   }
 }
