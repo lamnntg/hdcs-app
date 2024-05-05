@@ -35,7 +35,6 @@ export class FilesS3Controller {
   })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.MulterS3.File) {
-
     return this.filesService.create(file);
   }
 }

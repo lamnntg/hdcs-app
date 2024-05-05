@@ -57,6 +57,8 @@ export class FilesMinioService {
       throw new Error(`Error uploading file to MinIO: ${error}`);
     }
 
+    return objectName;
+
     return this.getPresignedUrl(objectName);
   }
 

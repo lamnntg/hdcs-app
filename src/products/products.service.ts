@@ -48,13 +48,19 @@ export class ProductsService {
     request: CreateProductRequestDto,
     images: Express.Multer.File[],
   ) {
-    const urls = await images.forEach(async (image) => {
-      return await this.fileService.create(image);
-    });
+    const urls: string[] = [];
 
-    console.log("🚀 ~ file: products.service.ts:56 ~ ProductsService ~ urls ~ urls:", urls)
+    for (const image of images) {
+      const url = await this.fileService.create(image, 'products');
+      urls.push(url);
+    }
 
-    
+    await this.productModel.create({});
+
+    console.log(
+      '🚀 ~ file: products.service.ts:56 ~ ProductsService ~ urls ~ urls:',
+      request,
+    );
 
     return;
   }
