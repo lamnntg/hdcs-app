@@ -3,22 +3,22 @@ import { Allow, IsNotEmpty } from 'class-validator';
 
 export class ProductRequestDto {
   @Allow()
-  perPage: number = 10;
+  per_page: number = 10;
 
   @Allow()
   page: number = 1;
 
   @Allow()
-  categoryId?: string;
+  category_id?: string;
 
   @Allow()
-  categorySlug?: string;
+  category_slug?: string;
 }
 
 export class CreateProductRequestDto {
   @ApiProperty()
   @IsNotEmpty()
-  categoryId: string;
+  category_id: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -29,5 +29,16 @@ export class CreateProductRequestDto {
   description: string;
 
   @ApiProperty()
-  sku?: string;
+  @IsNotEmpty()
+  skus?: CreateProductSkuRequestDto[];
+}
+
+export class CreateProductSkuRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  description: string;
 }

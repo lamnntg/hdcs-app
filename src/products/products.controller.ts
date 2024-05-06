@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Post,
   Query,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -46,13 +45,17 @@ export class ProductsController {
   @Post('/create')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', 10)) // Maximum 10 images can be uploaded
+  @UseInterceptors(FilesInterceptor('skus.*.sku_images', 10)) // Maximum 10 images per sku can be uploaded
   @HttpCode(HttpStatus.OK)
   async createProduct(
     @Body() request: CreateProductRequestDto,
     @UploadedFiles() images: Express.Multer.File[], // Use UploadedFiles to handle multiple files
+    @UploadedFiles() sku_images: { [key: string]: Express.Multer.File[] }, // Use UploadedFiles to handle multiple files for each sku
   ): Promise<void> {
-    console.log('Uploaded images:', images);
-
+    console.log(
+      '🚀 ~ file: products.controller.ts:57 ~ ProductsController ~ skus:',
+      sku_images,
+    );
     // Pass the product data and images to the service method to create the product
     return await this.productService.createProduct(request, images);
   }

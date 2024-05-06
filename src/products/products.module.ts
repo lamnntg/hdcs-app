@@ -7,11 +7,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductSchema, ProductSchemaClass } from 'src/entities/product.schema';
 import { FilesMinioModule } from 'src/minio/files.module';
 import { FilesMinioService } from 'src/minio/files.service';
+import {
+  CategorySchema,
+  CategorySchemaClass,
+} from 'src/entities/category.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ProductSchemaClass.name, schema: ProductSchema },
+      { name: CategorySchemaClass.name, schema: CategorySchema },
     ]),
     FilesMinioModule,
   ],
