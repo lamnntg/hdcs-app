@@ -83,4 +83,21 @@ export class FilesMinioService {
       throw new Error(`Error generating presigned URL: ${error}`);
     }
   }
+
+  /**
+   * getMutilsPresignedUrl
+   *
+   * @param objects
+   * @returns string[]
+   */
+  async getMutilsPresignedUrl(objects: string[]) {
+    const urls: string[] = [];
+
+    for (const object of objects) {
+      const url = await this.getPresignedUrl(object);
+      urls.push(url);
+    }
+
+    return urls;
+  }
 }

@@ -6,6 +6,8 @@ import { CategorySchemaClass, CategorySchema } from './category.schema';
 import { OrderSchemaClass, OrderSchema } from './order.schema';
 import { PromotionSchemaClass, PromotionSchema } from './promotion.schema';
 import { LicenseSchemaClass, LicenseSchema } from './license.schema';
+import { CartSchemaClass, CartSchema } from './cart.schema';
+import { CartDetailSchemaClass, CartDetailSchema } from './cart_detail.schema';
 
 import {
   OrderDetailSchemaClass,
@@ -25,6 +27,8 @@ import { ProductSeeder } from './seeders/product.seeder';
       { name: OrderDetailSchemaClass.name, schema: OrderDetailSchema },
       { name: PromotionSchemaClass.name, schema: PromotionSchema },
       { name: LicenseSchemaClass.name, schema: LicenseSchema },
+      { name: CartSchemaClass.name, schema: CartSchema },
+      { name: CartDetailSchemaClass.name, schema: CartDetailSchema },
     ]),
   ],
   providers: [CategorySeeder, ProductSeeder],

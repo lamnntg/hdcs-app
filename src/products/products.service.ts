@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   ProductRequestDto,
   CreateProductRequestDto,
@@ -17,12 +17,18 @@ import {
   CategorySchemaClass,
   CategorySchemaDocument,
 } from 'src/entities/category.schema';
+import {
+  ProductSkuSchemaClass,
+  ProductSkuSchemaDocument,
+} from 'src/entities/product_sku.schema';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(ProductSchemaClass.name)
     private readonly productModel: Model<ProductSchemaDocument>,
+    @InjectModel(ProductSkuSchemaClass.name)
+    private readonly productSkuModel: Model<ProductSkuSchemaDocument>,
     @InjectModel(CategorySchemaClass.name)
     private readonly categoryModel: Model<CategorySchemaDocument>,
     private fileService: FilesMinioService,
@@ -44,12 +50,20 @@ export class ProductsService {
       .lean();
 
     // transformer products
-    return products.map((product) => {
-      product._id = product._id.toString();
-      product.category._id = product.category._id.toString() || '';
+    // Use Promise.all to asynchronously process each product
+    const transformedProducts = await Promise.all(
+      products.map(async (product) => {
+        product._id = product._id.toString();
+        product.category._id = product.category._id.toString() || '';
+        product.images = await this.fileService.getMutilsPresignedUrl(
+          product.images,
+        );
 
-      return product;
-    });
+        return product;
+      }),
+    );
+
+    return transformedProducts;
   }
 
   /**
@@ -62,18 +76,14 @@ export class ProductsService {
     request: CreateProductRequestDto,
     images: Express.Multer.File[],
   ) {
-    console.log(
-      '🚀 ~ file: products.service.ts:66 ~ ProductsService ~ request:',
-      images,
-    );
-    const urls: string[] = [];
+    let urls: string[] = [];
 
     // check category is valid
     const category = await this.categoryModel.find({
       _id: request.category_id,
     });
 
-    if (category) {
+    if (!category) {
       throw new BadRequestException();
     }
 
@@ -87,16 +97,11 @@ export class ProductsService {
       type: 'new',
     });
 
-    for (const image of images) {
-      const url = await this.fileService.create(
-        image,
-        `products/${product._id.toString()}`,
-      );
-      urls.push(url);
-    }
+    // handle upload image product
+    urls = await this.uploadImagesByFieldsName(images, 'images', product._id);
 
-    // update image
-    const productData = await this.productModel.findOneAndUpdate(
+    // update image url
+    await this.productModel.findOneAndUpdate(
       { _id: product._id },
       {
         images: urls,
@@ -104,11 +109,57 @@ export class ProductsService {
       { new: true },
     );
 
-    console.log(
-      '🚀 ~ file: products.service.ts:56 ~ ProductsService ~ urls ~ urls:',
-      productData,
-    );
+    // create sku of product
+    if (request.skus) {
+      for (const [key, sku] of Object.entries(request.skus)) {
+        const collectImageName = `sku[${key}][sku_images]`;
+
+        const skuImages = this.uploadImagesByFieldsName(
+          images,
+          collectImageName,
+          product._id,
+        );
+
+        await this.productSkuModel.create({
+          code: `${sku.name.substring(0, 3)}${Date.now()}`.toUpperCase(),
+          product: product._id,
+          images: skuImages,
+          description: sku.description,
+          price: sku.price,
+          name: sku.name,
+        });
+      }
+    }
 
     return;
+  }
+
+  /**
+   * handle upload images
+   *
+   * @param images
+   * @param fieldName
+   * @param productId
+   * @returns
+   */
+  private async uploadImagesByFieldsName(
+    images: Express.Multer.File[],
+    fieldName: string,
+    productId: string,
+  ) {
+    const urls: string[] = [];
+
+    // handle upload image product
+    for (const image of images) {
+      if (image.fieldname == fieldName) {
+        const url = await this.fileService.create(
+          image,
+          `products/${productId}`,
+        );
+        urls.push(url);
+      }
+    }
+
+    return urls;
   }
 }

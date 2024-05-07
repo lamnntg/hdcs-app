@@ -11,11 +11,16 @@ import {
   CategorySchema,
   CategorySchemaClass,
 } from 'src/entities/category.schema';
+import {
+  ProductSkuSchema,
+  ProductSkuSchemaClass,
+} from 'src/entities/product_sku.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ProductSchemaClass.name, schema: ProductSchema },
+      { name: ProductSkuSchemaClass.name, schema: ProductSkuSchema },
       { name: CategorySchemaClass.name, schema: CategorySchema },
     ]),
     FilesMinioModule,

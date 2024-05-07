@@ -40,9 +40,9 @@ export class ProductSkuSchemaClass extends EntityDocumentHelper {
   description: string;
 
   @Prop({
-    type: String,
+    type: Number,
   })
-  categoryId: string;
+  price: number;
 
   @Prop({ default: now })
   createdAt: Date;

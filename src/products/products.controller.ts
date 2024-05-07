@@ -21,7 +21,7 @@ import {
   ProductRequestDto,
 } from './dtos/product.request.dto';
 import { ProductReponseDto } from './dtos/product.response.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user)
@@ -44,18 +44,12 @@ export class ProductsController {
 
   @Post('/create')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FilesInterceptor('images', 10)) // Maximum 10 images can be uploaded
-  @UseInterceptors(FilesInterceptor('skus.*.sku_images', 10)) // Maximum 10 images per sku can be uploaded
+  @UseInterceptors(AnyFilesInterceptor())
   @HttpCode(HttpStatus.OK)
   async createProduct(
     @Body() request: CreateProductRequestDto,
     @UploadedFiles() images: Express.Multer.File[], // Use UploadedFiles to handle multiple files
-    @UploadedFiles() sku_images: { [key: string]: Express.Multer.File[] }, // Use UploadedFiles to handle multiple files for each sku
   ): Promise<void> {
-    console.log(
-      '🚀 ~ file: products.controller.ts:57 ~ ProductsController ~ skus:',
-      sku_images,
-    );
     // Pass the product data and images to the service method to create the product
     return await this.productService.createProduct(request, images);
   }

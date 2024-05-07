@@ -41,4 +41,8 @@ export class CreateProductSkuRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   description: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  price: number;
 }

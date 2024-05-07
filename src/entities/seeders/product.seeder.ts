@@ -34,7 +34,9 @@ export class ProductSeeder {
       description:
         'The Dell XPS 13 is a powerful and portable laptop with a stunning display.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -47,7 +49,9 @@ export class ProductSeeder {
       description:
         "The iPhone 13 Pro is Apple's latest flagship smartphone with advanced features and performance.",
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -60,7 +64,9 @@ export class ProductSeeder {
       description:
         'The Sony PlayStation 5 is the latest gaming console with high-performance hardware and stunning graphics.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -73,7 +79,9 @@ export class ProductSeeder {
       description:
         'The Canon EOS R5 is a professional mirrorless camera with high-resolution imaging and 8K video recording.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -86,6 +94,7 @@ export class ProductSeeder {
       description:
         'The MacBook Pro is a premium laptop with powerful performance and a sleek design.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
@@ -99,7 +108,9 @@ export class ProductSeeder {
       description:
         'The Google Pixel 6 is a flagship smartphone with a powerful camera and stock Android experience.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -112,7 +123,9 @@ export class ProductSeeder {
       description:
         'The Fujifilm X-T4 is a mirrorless camera with advanced features and excellent image quality.',
       status: 'active',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -126,7 +139,9 @@ export class ProductSeeder {
       images: ['sku1_1.jpg', 'sku1_2.jpg'],
       description:
         'The Dell XPS 13 - Core i7 SKU comes with a powerful processor, ample RAM, and a spacious SSD for fast performance.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -137,7 +152,9 @@ export class ProductSeeder {
       images: ['sku2_1.jpg', 'sku2_2.jpg'],
       description:
         'The iPhone 13 Pro - 256GB, Graphite SKU features ample storage and a sleek graphite finish.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -148,7 +165,9 @@ export class ProductSeeder {
       images: ['sku3_1.jpg', 'sku3_2.jpg'],
       description:
         'The Sony PlayStation 5 - Standard Edition SKU includes the console and a controller.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -159,7 +178,9 @@ export class ProductSeeder {
       images: ['sku4_1.jpg', 'sku4_2.jpg'],
       description:
         'The Canon EOS R5 - Body Only SKU includes only the camera body without a lens.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -170,7 +191,9 @@ export class ProductSeeder {
       images: ['sku5_1.jpg', 'sku5_2.jpg'],
       description:
         'The MacBook Pro - 13-inch, M1 Chip SKU offers powerful performance and a high-resolution Retina display.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -181,7 +204,9 @@ export class ProductSeeder {
       images: ['sku6_1.jpg', 'sku6_2.jpg'],
       description:
         'The Google Pixel 6 - 128GB, Just Black SKU features a sleek design and advanced camera capabilities.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
@@ -192,7 +217,9 @@ export class ProductSeeder {
       images: ['sku7_1.jpg', 'sku7_2.jpg'],
       description:
         'The Fujifilm X-T4 - Silver SKU comes with an 18-55mm lens kit, perfect for photography enthusiasts.',
+      price: 300000,
       createdAt: new Date(),
+
       updatedAt: new Date(),
       deletedAt: null,
     },
