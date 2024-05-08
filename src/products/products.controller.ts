@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   UploadedFiles,
@@ -40,6 +41,16 @@ export class ProductsController {
     @Query() request: ProductRequestDto,
   ): Promise<ProductReponseDto[]> {
     return await this.productService.getProducts(request);
+  }
+
+  @Get('/:productId')
+  @HttpCode(HttpStatus.OK)
+  async getProductDetail(@Param('productId') productId: string): Promise<any> {
+    console.log(
+      '🚀 ~ file: products.controller.ts:50 ~ ProductsController ~ getProductDetail ~ productId:',
+      productId,
+    );
+    return await this.productService.getProductDetail(productId);
   }
 
   @Post('/create')

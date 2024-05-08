@@ -34,6 +34,12 @@ export class ProductsService {
     private fileService: FilesMinioService,
   ) {}
 
+  /**
+   * getProducts
+   *
+   * @param request
+   * @returns
+   */
   async getProducts(request: ProductRequestDto): Promise<ProductReponseDto[]> {
     const { per_page: perPage, page, category_id: categoryId } = request;
     // handle query
@@ -64,6 +70,72 @@ export class ProductsService {
     );
 
     return transformedProducts;
+  }
+
+  /**
+   * getProducts
+   *
+   * @param request
+   * @returns
+   */
+  async getProductDetail(productQuery: string): Promise<any> {
+    let query;
+
+    if (!productQuery.includes('-')) {
+      // Assuming productQuery is the productId
+      query = { _id: productQuery };
+    } else {
+      // Assuming productQuery is the slug
+      query = { slug: productQuery };
+    }
+
+    const product = await this.productModel.findOne(query).populate('category');
+
+    if (!product) {
+      // Handle product not found
+      throw new Error('Product not found');
+    }
+
+    const productSkus = await this.productSkuModel.find({
+      product: product._id,
+    });
+
+    const productImages = await this.fileService.getMutilsPresignedUrl(
+      product.images,
+    );
+
+    const skus = await Promise.all(
+      productSkus.map(async (sku) => {
+        const skuImages = await this.fileService.getMutilsPresignedUrl(
+          sku.images,
+        );
+
+        return {
+          _id: sku._id.toString(),
+          code: sku.code,
+          name: sku.name,
+          images: skuImages,
+          description: sku.description,
+          price: sku.price,
+        };
+      }),
+    );
+
+    return {
+      _id: product._id.toString(),
+      category: {
+        _id: product.category._id.toString(), //
+        name: product.category.name, //
+        slug: product.category.slug, //
+        description: product.category.description, //
+      },
+      skus: skus,
+      name: product.name,
+      images: productImages,
+      description: product.description,
+      slug: product.slug,
+      status: product.status,
+    };
   }
 
   /**
@@ -112,9 +184,9 @@ export class ProductsService {
     // create sku of product
     if (request.skus) {
       for (const [key, sku] of Object.entries(request.skus)) {
-        const collectImageName = `sku[${key}][sku_images]`;
+        const collectImageName = `skus[${key}][sku_images]`;
 
-        const skuImages = this.uploadImagesByFieldsName(
+        const skuImages = await this.uploadImagesByFieldsName(
           images,
           collectImageName,
           product._id,

@@ -4,9 +4,9 @@ export class ProductReponseDto {
   name?: string;
   images?: string[];
   description?: string;
+  skus?: any;
   slug?: string;
   status?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  __v?: number;
 }
