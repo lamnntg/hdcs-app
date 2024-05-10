@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -30,10 +31,6 @@ export class CartsController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async getCarts(@Request() request): Promise<any> {
-    console.log(
-      '🚀 ~ file: carts.controller.ts:22 ~ CartsController ~ getCarts ~ request:',
-      request.user,
-    );
     return await this.cartsService.getCarts(request.user.id);
   }
 
@@ -43,7 +40,12 @@ export class CartsController {
     @Request() request,
     @Body() params: CartItemDto,
   ): Promise<any> {
-    
     return await this.cartsService.addToCart(request.user.id, params);
+  }
+
+  @Delete('/delete')
+  @HttpCode(HttpStatus.OK)
+  async deleteCart(@Request() request): Promise<any> {
+    return await this.cartsService.deleteCart(request.user.id);
   }
 }

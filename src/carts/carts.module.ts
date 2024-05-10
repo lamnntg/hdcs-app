@@ -16,6 +16,7 @@ import {
   ProductSkuSchema,
   ProductSkuSchemaClass,
 } from 'src/entities/product_sku.schema';
+import { FilesMinioService } from 'src/minio/files.service';
 
 @Module({
   imports: [
@@ -24,11 +25,12 @@ import {
       { name: CartSchemaClass.name, schema: CartSchema },
       { name: CartDetailSchemaClass.name, schema: CartDetailSchema },
       { name: ProductSkuSchemaClass.name, schema: ProductSkuSchema },
+      { name: ProductSkuSchemaClass.name, schema: ProductSkuSchema },
     ]),
     CacheModule.register(),
   ],
   controllers: [CartsController],
-  providers: [CartsService],
+  providers: [CartsService, FilesMinioService],
   exports: [CartsService],
 })
 export class CartsModule {}

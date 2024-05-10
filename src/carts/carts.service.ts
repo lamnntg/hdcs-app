@@ -1,4 +1,9 @@
-import { Inject, Injectable, Request } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Request,
+} from '@nestjs/common';
 import {
   CategorySchemaDocument,
   CategorySchemaClass,
@@ -17,6 +22,7 @@ import {
   ProductSkuSchemaClass,
   ProductSkuSchemaDocument,
 } from 'src/entities/product_sku.schema';
+import { FilesMinioService } from 'src/minio/files.service';
 
 @Injectable()
 export class CartsService {
@@ -30,6 +36,7 @@ export class CartsService {
     @InjectModel(ProductSkuSchemaClass.name)
     private readonly productSkuModel: Model<ProductSkuSchemaDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private fileService: FilesMinioService,
   ) {}
 
   /**
@@ -51,20 +58,32 @@ export class CartsService {
     // handle data cart detail\
     const cartItems: any = [];
     for (const item of cartDetails) {
-      const productSku = await this.productSkuModel.findById(item.productSku);
+      const productSku = await this.productSkuModel
+        .findById(item.productSku)
+        .lean();
+
+      const images = await this.fileService.getMutilsPresignedUrl(
+        productSku?.images || [],
+      );
 
       const cartItem = {
         _id: item._id.toString(),
         quantity: item.quantity,
         price: item.price,
-        product: productSku,
+        product: {
+          sku_id: productSku?.product.toString(),
+          name: productSku?.name,
+          images: images,
+          description: productSku?.description,
+          code: productSku?.code,
+        },
       };
 
       cartItems.push(cartItem);
     }
 
     return {
-      _id: cart._id,
+      _id: cart._id.toString(),
       items: cartItems,
     };
   }
@@ -88,12 +107,49 @@ export class CartsService {
     });
 
     if (productSku) {
-      const cartDetail = await this.cartDetailModel.create({
-        cart: cart._id,
-        productSku: cartItem.sku_id,
-        quantity: cartItem.quantity,
-        price: productSku.price,
-      });
+      const cartDetail = await this.cartDetailModel
+        .findOne({
+          productSku: productSku._id,
+          cart: cart._id,
+        })
+        .lean();
+
+      if (!cartDetail) {
+        await this.cartDetailModel.create({
+          cart: cart._id,
+          productSku: cartItem.sku_id,
+          quantity: cartItem.quantity,
+          price: productSku.price,
+        });
+
+        return;
+      }
+
+      await this.cartDetailModel.updateOne(
+        {
+          productSku: productSku._id,
+          cart: cart._id,
+        },
+        {
+          quantity: cartItem.quantity + cartDetail.quantity,
+        },
+      );
+      return;
+    }
+
+    throw new BadRequestException();
+  }
+
+  /**
+   * delete cart
+   * @param userId
+   */
+  async deleteCart(userId: string) {
+    const cart = await this.cartModel.findOne({ user: userId });
+
+    if (cart) {
+      await this.cartDetailModel.deleteMany({ cart: cart._id });
+      await await this.cartModel.deleteMany({ user: userId });
     }
 
     return;
