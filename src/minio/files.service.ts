@@ -17,8 +17,7 @@ export class FilesMinioService {
       endPoint: this.configService.getOrThrow('file.awsDefaultS3Url', {
         infer: true,
       }),
-      port: 9000,
-      useSSL: false,
+      useSSL: true,
       accessKey: this.configService.getOrThrow('file.accessKeyId', {
         infer: true,
       }),

@@ -46,10 +46,6 @@ export class ProductsController {
   @Get('/:productId')
   @HttpCode(HttpStatus.OK)
   async getProductDetail(@Param('productId') productId: string): Promise<any> {
-    console.log(
-      '🚀 ~ file: products.controller.ts:50 ~ ProductsController ~ getProductDetail ~ productId:',
-      productId,
-    );
     return await this.productService.getProductDetail(productId);
   }
 

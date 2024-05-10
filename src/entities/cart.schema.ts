@@ -12,9 +12,8 @@ export class CartSchemaClass {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserSchemaClass',
-    default: null,
   })
-  userId: UserSchemaClass;
+  user: UserSchemaClass;
 
   @Prop({ required: true })
   total: number;

@@ -3,7 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { ProductSkuSchemaClass } from './product_sku.schema';
 import { CartSchemaClass } from './cart.schema';
 
-export type CartSchemaDetailDocument = HydratedDocument<CartDetailSchemaClass>;
+export type CartDetailSchemaDocument = HydratedDocument<CartDetailSchemaClass>;
 
 @Schema({
   timestamps: true,
@@ -13,9 +13,9 @@ export class CartDetailSchemaClass {
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserSchemaClass',
+    ref: 'CartSchemaClass',
   })
-  cartId: CartSchemaClass;
+  cart: CartSchemaClass;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ProductSchemaClass' })
   productSku: ProductSkuSchemaClass;
