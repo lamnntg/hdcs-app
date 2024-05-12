@@ -16,7 +16,7 @@ import { RoleEnum } from '../roles/roles.enum';
 import { CartsService } from './carts.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { CartItemDto, CreateCartRequestDto } from './dtos/carts.dto';
+import { CartItemDto, CreateCartRequestDto, UpdateCartItemDto } from './dtos/carts.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user)
@@ -51,5 +51,14 @@ export class CartsController {
     @Param('id') cartDetailId: string,
   ): Promise<any> {
     return await this.cartsService.deleteCart(request.user.id, cartDetailId);
+  }
+
+  @Post('/update')
+  @HttpCode(HttpStatus.OK)
+  async updateCart(
+    @Request() request,
+    @Body() params: UpdateCartItemDto,
+  ): Promise<any> {
+    return await this.cartsService.updateCart(request.user.id, params);
   }
 }

@@ -13,7 +13,7 @@ import { Model, ObjectId } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CartSchemaClass, CartSchemaDocument } from 'src/entities/cart.schema';
-import { CartItemDto } from './dtos/carts.dto';
+import { CartItemDto, UpdateCartItemDto } from './dtos/carts.dto';
 import {
   CartDetailSchemaClass,
   CartDetailSchemaDocument,
@@ -158,6 +158,24 @@ export class CartsService {
     } else {
       await this.cartDetailModel.deleteOne({ _id: cartDetailId });
     }
+
+    return;
+  }
+
+  /**
+   * update quantity cart
+   * @param userId
+   */
+  async updateCart(userId: string, params: UpdateCartItemDto) {
+    const cart = await this.cartModel.findOne({ user: userId });
+
+    if (!cart) {
+      throw new BadRequestException('Cart is not available');
+    }
+    await this.cartDetailModel.findOneAndUpdate(
+      { productSku: params.sku_id },
+      { quantity: params.quantity },
+    );
 
     return;
   }

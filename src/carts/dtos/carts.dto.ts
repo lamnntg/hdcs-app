@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CartReponseDto {
   _id: string;
@@ -18,6 +18,16 @@ export class CreateCartRequestDto {
 }
 
 export class CartItemDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  sku_id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  quantity: number; //
+}
+
+export class UpdateCartItemDto {
   @ApiProperty()
   @IsNotEmpty()
   sku_id: string;
