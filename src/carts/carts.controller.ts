@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -43,9 +44,12 @@ export class CartsController {
     return await this.cartsService.addToCart(request.user.id, params);
   }
 
-  @Delete('/delete')
+  @Delete('/delete/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteCart(@Request() request): Promise<any> {
-    return await this.cartsService.deleteCart(request.user.id);
+  async deleteCart(
+    @Request() request,
+    @Param('id') cartDetailId: string,
+  ): Promise<any> {
+    return await this.cartsService.deleteCart(request.user.id, cartDetailId);
   }
 }

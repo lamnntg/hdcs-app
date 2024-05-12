@@ -28,7 +28,17 @@ export class OrderSchemaClass extends EntityDocumentHelper {
   @Prop({
     type: String,
   })
+  name: string;
+
+  @Prop({
+    type: String,
+  })
   shippingAddress: string;
+
+  @Prop({
+    type: String,
+  })
+  phone: string;
 
   @Prop({
     type: String,

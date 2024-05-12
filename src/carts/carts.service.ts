@@ -71,7 +71,8 @@ export class CartsService {
         quantity: item.quantity,
         price: item.price,
         product: {
-          sku_id: productSku?.product.toString(),
+          sku_id: productSku?._id.toString(),
+          product_id: productSku?.product.toString(),
           name: productSku?.name,
           images: images,
           description: productSku?.description,
@@ -144,12 +145,18 @@ export class CartsService {
    * delete cart
    * @param userId
    */
-  async deleteCart(userId: string) {
+  async deleteCart(userId: string, cartDetailId: string) {
     const cart = await this.cartModel.findOne({ user: userId });
 
-    if (cart) {
+    if (!cart) {
+      return;
+    }
+
+    if (cartDetailId == 'all') {
       await this.cartDetailModel.deleteMany({ cart: cart._id });
-      await await this.cartModel.deleteMany({ user: userId });
+      await this.cartModel.deleteMany({ user: userId });
+    } else {
+      await this.cartDetailModel.deleteOne({ _id: cartDetailId });
     }
 
     return;

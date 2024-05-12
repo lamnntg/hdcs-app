@@ -35,6 +35,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FilesMinioModule } from './minio/files.module';
 import { CartsModule } from './carts/carts.module';
+import { OrdersModule } from './orders/orders.module';
 
 // <database-block>
 const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
@@ -105,6 +106,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     ProductsModule,
     CategoriesModule,
     CartsModule,
+    OrdersModule,
     // entities extention
     EntitiesModule,
     FilesMinioModule,
