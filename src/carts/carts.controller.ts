@@ -16,7 +16,7 @@ import { RoleEnum } from '../roles/roles.enum';
 import { CartsService } from './carts.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { CartItemDto, CreateCartRequestDto, UpdateCartItemDto } from './dtos/carts.dto';
+import { CartItemDto, UpdateCartItemDto } from './dtos/carts.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user)

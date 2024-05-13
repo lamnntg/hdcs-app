@@ -75,6 +75,7 @@ export class OrdersService {
       .find({
         user: userId,
       })
+      .sort({ createdAt: 'desc' })
       .lean();
 
     const results: any = [];
@@ -82,22 +83,42 @@ export class OrdersService {
       const orderDetail = await this.orderDetailModel.find({
         order: order._id,
       });
+      const productSkus = orderDetail.map((item) => item.productSku);
 
+      const skus = await this.productSkuModel.find({
+        _id: { $in: productSkus },
+      });
+
+      const formattedItems = await Promise.all(
+        orderDetail.map(async (item) => {
+          const sku = skus.find(
+            (productSku) =>
+              productSku._id.toString() === item.productSku.toString(),
+          );
+          const images = await this.fileService.getMutilsPresignedUrl(
+            sku?.images || [],
+          );
+
+          return {
+            _id: item._id.toString(),
+            name: sku?.name,
+            images: images,
+            sku_id: item.productSku.toString(),
+            quantity: item.quantity,
+            unit_price: item.unitPrice,
+          };
+        }),
+      );
+      // Construct the result object for the order
       const result = {
         _id: order._id.toString(),
         name: order.name,
         shipping_address: order.shippingAddress,
         message: order.message,
         status: order.status,
-        create_at: order.createdAt,
+        created_at: order.createdAt,
         updated_at: order.updatedAt,
-        items: orderDetail.map((item) => {
-          return {
-            sku_id: item.productSku.toString(),
-            quantity: item.quantity,
-            unit_price: item.unitPrice,
-          };
-        }),
+        items: formattedItems,
       };
 
       results.push(result);

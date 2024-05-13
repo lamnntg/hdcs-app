@@ -3,7 +3,10 @@ import {
   ProductRequestDto,
   CreateProductRequestDto,
 } from './dtos/product.request.dto';
-import { ProductReponseDto } from './dtos/product.response.dto';
+import {
+  ProductListResponseDto,
+  ProductReponseDto,
+} from './dtos/product.response.dto';
 import {
   ProductSchemaDocument,
   ProductSchemaClass,
@@ -40,18 +43,43 @@ export class ProductsService {
    * @param request
    * @returns
    */
-  async getProducts(request: ProductRequestDto): Promise<ProductReponseDto[]> {
-    const { per_page: perPage, page, category_id: categoryId } = request;
+  async getProducts(
+    request: ProductRequestDto,
+  ): Promise<ProductListResponseDto> {
+    const {
+      per_page: perPage,
+      page,
+      category_id: categoryId,
+      category_slug: categorySlug,
+      product_name: productName,
+    } = request;
+
     // handle query
     let query = {};
     if (categoryId) {
       query = { category: categoryId };
+    } else if (categorySlug) {
+      const category = await this.categoryModel
+        .findOne({ slug: categorySlug })
+        .lean();
+      query = { category: category?._id };
     }
 
+    // query search product
+    if (productName) {
+      // Case-insensitive search for productName
+      query = { ...query, name: { $regex: productName, $options: 'i' } };
+    }
+
+    // Find total count of documents
+    const totalCount = await this.productModel.countDocuments(query);
+
+    const skip = (page - 1) * perPage;
     const products = await this.productModel
       .find(query)
+      .sort({ createdAt: 'desc' })
       .populate('category')
-      .skip(page)
+      .skip(skip)
       .limit(perPage)
       .lean();
 
@@ -69,7 +97,13 @@ export class ProductsService {
       }),
     );
 
-    return transformedProducts;
+    return {
+      total: totalCount as number,
+      per_page: perPage as number,
+      current_page: page as number,
+      last_page: Math.ceil(totalCount / perPage),
+      data: transformedProducts,
+    };
   }
 
   /**

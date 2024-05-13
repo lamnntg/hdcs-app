@@ -13,6 +13,9 @@ export class ProductRequestDto {
 
   @Allow()
   category_slug?: string;
+
+  @Allow()
+  product_name?: string;
 }
 
 export class CreateProductRequestDto {

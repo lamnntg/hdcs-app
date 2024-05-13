@@ -21,7 +21,7 @@ import {
   CreateProductRequestDto,
   ProductRequestDto,
 } from './dtos/product.request.dto';
-import { ProductReponseDto } from './dtos/product.response.dto';
+import { ProductListResponseDto } from './dtos/product.response.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
@@ -39,7 +39,7 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   async getProducts(
     @Query() request: ProductRequestDto,
-  ): Promise<ProductReponseDto[]> {
+  ): Promise<ProductListResponseDto> {
     return await this.productService.getProducts(request);
   }
 
