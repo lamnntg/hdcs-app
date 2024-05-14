@@ -15,6 +15,8 @@ import {
   ProductSkuSchema,
   ProductSkuSchemaClass,
 } from 'src/entities/product_sku.schema';
+import { CategoriesService } from 'src/categories/categories.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -23,10 +25,11 @@ import {
       { name: ProductSkuSchemaClass.name, schema: ProductSkuSchema },
       { name: CategorySchemaClass.name, schema: CategorySchema },
     ]),
+    CacheModule.register(),
     FilesMinioModule,
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, FilesMinioService],
+  providers: [ProductsService, FilesMinioService, CategoriesService],
   exports: [ProductsService],
 })
 export class ProductsModule {}

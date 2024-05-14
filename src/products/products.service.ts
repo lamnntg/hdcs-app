@@ -24,6 +24,7 @@ import {
   ProductSkuSchemaClass,
   ProductSkuSchemaDocument,
 } from 'src/entities/product_sku.schema';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductsService {
@@ -35,6 +36,7 @@ export class ProductsService {
     @InjectModel(CategorySchemaClass.name)
     private readonly categoryModel: Model<CategorySchemaDocument>,
     private fileService: FilesMinioService,
+    private categoryService: CategoriesService,
   ) {}
 
   /**
@@ -57,12 +59,26 @@ export class ProductsService {
     // handle query
     let query = {};
     if (categoryId) {
-      query = { category: categoryId };
+      const categoryIds =
+        await this.categoryService.getChildCategories(categoryId);
+
+      categoryIds.push(categoryId);
+      query = { category: { $in: categoryIds } };
     } else if (categorySlug) {
       const category = await this.categoryModel
         .findOne({ slug: categorySlug })
         .lean();
-      query = { category: category?._id };
+
+      if (category) {
+        const categoryIds = await this.categoryService.getChildCategories(
+          category?._id?.toString(),
+        );
+        categoryIds.push(category?._id?.toString());
+
+        if (categoryIds) {
+          query = { category: { $in: categoryIds } };
+        }
+      }
     }
 
     // query search product
