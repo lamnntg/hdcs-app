@@ -104,7 +104,7 @@ export class ProductsService {
     const transformedProducts = await Promise.all(
       products.map(async (product) => {
         product._id = product._id.toString();
-        product.category._id = product.category._id.toString() || '';
+        product.category._id = product?.category?._id?.toString() || '';
         product.images = await this.fileService.getMutilsPresignedUrl(
           product.images,
         );

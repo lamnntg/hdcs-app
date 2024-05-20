@@ -10,7 +10,7 @@ import { AllConfigType } from 'src/config/config.type';
 @Injectable()
 export class FilesMinioService {
   private readonly minioClient: Minio.Client;
-  private readonly bucketName = 'hdcs-store';
+  private readonly bucketName = 'store';
 
   constructor(private configService: ConfigService<AllConfigType>) {
     this.minioClient = new Minio.Client({
