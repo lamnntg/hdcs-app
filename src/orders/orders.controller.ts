@@ -34,16 +34,22 @@ export class OrdersController {
 
   @Post('/create')
   @HttpCode(HttpStatus.OK)
-  async createCart(
+  async createOrder(
     @Request() request,
     @Body() params: CreateOrderRequestDto,
   ): Promise<any> {
-    return await this.ordersService.createCart(request.user._id, params);
+    return await this.ordersService.createOrder(request.user._id, params);
   }
 
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async getCarts(@Request() request): Promise<any> {
+  async getOrders(@Request() request): Promise<any> {
     return await this.ordersService.getOrders(request.user._id);
+  }
+
+  @Get('/all')
+  @HttpCode(HttpStatus.OK)
+  async getAllOrder(@Request() request): Promise<any> {
+    return await this.ordersService.getOrders();
   }
 }

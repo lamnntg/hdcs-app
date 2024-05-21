@@ -29,7 +29,7 @@ export class OrdersService {
     private fileService: FilesMinioService,
   ) {}
 
-  async createCart(userId: string, params: CreateOrderRequestDto) {
+  async createOrder(userId: string, params: CreateOrderRequestDto) {
     const skuIds = params.items.map(
       (item) => new mongoose.Types.ObjectId(item.sku_id),
     );
@@ -70,11 +70,13 @@ export class OrdersService {
    * get orders
    * @param userId
    */
-  async getOrders(userId: string) {
+  async getOrders(userId: string | null = null) {
+    let query: any = null;
+    if (userId) {
+      query = { user: userId };
+    }
     const orders = await this.orderModel
-      .find({
-        user: userId,
-      })
+      .find(query)
       .sort({ createdAt: 'desc' })
       .lean();
 
