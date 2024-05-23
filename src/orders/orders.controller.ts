@@ -4,13 +4,10 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
   Query,
   Request,
-  UploadedFiles,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
@@ -19,7 +16,10 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { RolesGuard } from '../roles/roles.guard';
 import { OrdersService } from './orders.service';
-import { CreateOrderRequestDto } from './dtos/order.request.dto';
+import {
+  CreateOrderRequestDto,
+  OrderQueryRequestDto,
+} from './dtos/order.request.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user)
@@ -49,7 +49,7 @@ export class OrdersController {
 
   @Get('/all')
   @HttpCode(HttpStatus.OK)
-  async getAllOrder(@Request() request): Promise<any> {
-    return await this.ordersService.getOrders();
+  async getAllOrder(@Query() request: OrderQueryRequestDto): Promise<any> {
+    return await this.ordersService.getOrders(request);
   }
 }

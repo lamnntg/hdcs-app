@@ -15,7 +15,10 @@ import {
   ProductSkuSchemaClass,
   ProductSkuSchemaDocument,
 } from 'src/entities/product_sku.schema';
-import { CreateOrderRequestDto } from './dtos/order.request.dto';
+import {
+  CreateOrderRequestDto,
+  OrderQueryRequestDto,
+} from './dtos/order.request.dto';
 
 @Injectable()
 export class OrdersService {
@@ -70,14 +73,27 @@ export class OrdersService {
    * get orders
    * @param userId
    */
-  async getOrders(userId: string | null = null) {
+  async getOrders(request: OrderQueryRequestDto) {
+    const { per_page: perPage, page, user_id: userId } = request;
+
+    console.log(
+      '🚀 ~ file: orders.service.ts:79 ~ OrdersService ~ getOrders ~ request:',
+      request,
+    );
+
     let query: any = null;
     if (userId) {
       query = { user: userId };
     }
+
+    const skip = (page - 1) * perPage;
+    const totalCount = await this.orderModel.countDocuments(query);
+
     const orders = await this.orderModel
       .find(query)
       .sort({ createdAt: 'desc' })
+      .skip(skip)
+      .limit(perPage)
       .lean();
 
     const results: any = [];
@@ -126,6 +142,12 @@ export class OrdersService {
       results.push(result);
     }
 
-    return results;
+    return {
+      total: Number(totalCount) as number,
+      per_page: Number(perPage) as number,
+      current_page: Number(page) as number,
+      last_page: Math.ceil(totalCount / perPage),
+      data: results,
+    };
   }
 }

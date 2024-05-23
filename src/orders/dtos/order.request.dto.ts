@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { Allow, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderRequestDto {
@@ -30,4 +30,15 @@ export class OrderItemRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   quantity: number;
+}
+
+export class OrderQueryRequestDto {
+  @Allow()
+  per_page: number = 10;
+
+  @Allow()
+  page: number = 1;
+
+  @Allow()
+  user_id?: string;
 }

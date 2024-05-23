@@ -114,9 +114,9 @@ export class ProductsService {
     );
 
     return {
-      total: totalCount as number,
-      per_page: perPage as number,
-      current_page: page as number,
+      total: Number(totalCount) as number,
+      per_page: Number(perPage) as number,
+      current_page: Number(page) as number,
       last_page: Math.ceil(totalCount / perPage),
       data: transformedProducts,
     };
