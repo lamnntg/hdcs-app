@@ -52,26 +52,29 @@ export class UsersController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(
-    @Query() query: QueryUserDto,
-  ): Promise<InfinityPaginationResultType<User>> {
+  async findAll(@Query() query: QueryUserDto): Promise<any> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
     }
 
-    return infinityPagination(
-      await this.usersService.findManyWithPagination({
-        filterOptions: query?.filters,
-        sortOptions: query?.sort,
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
+    const data = await this.usersService.findManyWithPagination({
+      filterOptions: query?.filters,
+      sortOptions: query?.sort,
+      paginationOptions: {
+        page,
+        limit,
+      },
+    });
+
+    return {
+      data: data,
+      current_page: page || 1,
+      per_page: limit,
+      last_page: 5,
+      total: 50,
+    };
   }
 
   @SerializeOptions({

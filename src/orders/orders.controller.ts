@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   Request,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -22,7 +23,7 @@ import {
 } from './dtos/order.request.dto';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.user)
+@Roles(RoleEnum.user, RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Orders')
 @Controller({
@@ -47,6 +48,9 @@ export class OrdersController {
     return await this.ordersService.getOrders(request.user._id);
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get('/all')
   @HttpCode(HttpStatus.OK)
   async getAllOrder(@Query() request: OrderQueryRequestDto): Promise<any> {

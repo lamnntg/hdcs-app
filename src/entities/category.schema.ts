@@ -30,6 +30,11 @@ export class CategorySchemaClass extends EntityDocumentHelper {
 
   @Prop({
     type: String,
+  })
+  icon: string | null;
+
+  @Prop({
+    type: String,
     unique: true,
   })
   slug: string;
